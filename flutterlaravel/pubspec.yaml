@@ -12,11 +12,12 @@ dependencies:
   cupertino_icons: ^1.0.2
   http: ^1.0.0
   quickalert: ^1.0.1
-  provider: ^6.0.5
   dio: ^5.2.1+1
   toast: ^0.3.0
   flutter_secure_storage: ^8.0.0
   device_info_plus: ^9.0.2
+  shared_preferences: ^2.1.2
+  provider: ^6.0.5
 
 dev_dependencies:
   flutter_test:

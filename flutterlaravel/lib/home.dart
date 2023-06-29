@@ -1,12 +1,10 @@
-
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutterlaravel/services/auth.dart';
+import 'package:flutterlaravel/drawer_screen.dart';
+import 'package:flutterlaravel/services/auth_service.dart';
 import 'package:flutterlaravel/models/students.dart';
 import 'package:flutterlaravel/screens/add_student_form.dart';
-import 'package:flutterlaravel/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterlaravel/screens/update_student_form.dart';
-import 'package:provider/provider.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title});
@@ -19,19 +17,20 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Students studentService = Students();
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    readToken(context);
+    readToken();
   }
 
-  void readToken(BuildContext context) async {
-    String? token = await storage.read(key: 'token') as String?;
+  void readToken() async {
+    String? token = await storage.read(key: 'token');
     if (token != null) {
-      Provider.of<Auth>(context, listen: false).tryToken(token: token);
+      // Set the token in the AuthService
+      AuthServices.setToken(token);
       print(token);
     } else {
       // Handle the case when the token is null
@@ -123,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
-                                icon: Icon(Icons.edit),
+                                icon: const Icon(Icons.edit),
                                 onPressed: () {
                                   Navigator.pushNamed(
                                     context,
@@ -203,64 +202,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      drawer: Drawer(
-        child: Consumer<Auth>(
-          builder: (context, auth, child) {
-            if (!auth.authenticated) {
-              return ListView(
-                children: [
-                  ListTile(
-                    title: const Text("Login"),
-                    leading: const Icon(Icons.login),
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const LoginScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              );
-            } else {
-              return ListView(
-                children: [
-                  DrawerHeader(
-                    decoration: const BoxDecoration(
-                      color: Colors.blue,
-                    ),
-                    child: Column(
-                      children: [
-                        CircleAvatar(
-                          backgroundImage: NetworkImage(auth.user.avatar),
-                          radius: 30,
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          auth.user.name,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          auth.user.email,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ),
-                  ListTile(
-                    title: const Text("Logout"),
-                    leading: const Icon(Icons.logout),
-                    onTap: () {
-                      Provider.of<Auth>(context, listen: false).logout();
-                    },
-                  ),
-                ],
-              );
-            }
-          },
-        ),
-      ),
+      drawer: const DrawerScreen(),
     );
   }
 }

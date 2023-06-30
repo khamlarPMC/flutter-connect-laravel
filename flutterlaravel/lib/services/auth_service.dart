@@ -96,6 +96,7 @@ class AuthServices with ChangeNotifier {
   }
 
   Future<void> tryToken({required String token, String? accessToken}) async {
+    // ignore: unnecessary_null_comparison
     if (token == null) {
       return;
     } else {

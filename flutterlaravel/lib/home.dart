@@ -1,6 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutterlaravel/drawer_screen.dart';
-import 'package:flutterlaravel/services/auth_service.dart';
 import 'package:flutterlaravel/models/students.dart';
 import 'package:flutterlaravel/screens/add_student_form.dart';
 import 'package:flutter/material.dart';
@@ -23,19 +22,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    readToken();
-  }
-
-  void readToken() async {
-    String? token = await storage.read(key: 'token');
-    if (token != null) {
-      // Set the token in the AuthService
-      AuthServices.setToken(token);
-      print(token);
-    } else {
-      // Handle the case when the token is null
-      print('Token is null');
-    }
   }
 
   @override

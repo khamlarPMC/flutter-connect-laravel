@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutterlaravel/home.dart';
+import 'package:flutterlaravel/models/register_button.dart';
 import 'package:flutterlaravel/screens/login_screen.dart';
-import 'package:flutterlaravel/services/auth_service.dart';
 import 'package:http/http.dart' as http;
 
 class RegisterScreen extends StatefulWidget {
@@ -34,27 +34,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String _password = '';
 
   Future<void> createAccountPressed() async {
-    bool emailValid = RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-z0-9]+\.[a-zA-Z]+")
-        .hasMatch(_email);
-    if (emailValid) {
-      http.Response response =
-          await AuthServices.register(_name, _email, _password);
-      Map<String, dynamic> responseMap = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) =>
-                const MyHomePage(title: 'Show my space'),
-          ),
-        );
-      } else {
-        String errorMessage = responseMap.values.first[0];
-        errorSnackBar(context, errorMessage);
-      }
+    // Perform email validation
+
+    // Make the registration request
+    final response = await http.post(
+      Uri.parse('http://10.0.2.2:8000/api/auth/register'),
+      body: {
+        'name': _name,
+        'email': _email,
+        'password': _password,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Registration successful, navigate to the desired page
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) =>
+              const MyHomePage(title: 'Show my space'),
+        ),
+      );
     } else {
-      errorSnackBar(context, 'Email is not valid');
+      // Registration failed, handle the error
+      final responseMap = jsonDecode(response.body);
+      String errorMessage;
+      if (responseMap['errors'] != null) {
+        // Handle validation errors
+        errorMessage = responseMap['errors'].values.first[0];
+      } else {
+        // Handle general error
+        errorMessage = responseMap['message'];
+      }
+      errorSnackBar(context, errorMessage);
     }
   }
 
@@ -121,9 +133,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
               },
             ),
             const SizedBox(height: 40),
-            ElevatedButton(
-              onPressed: createAccountPressed,
-              child: Text('Create Account'),
+            RegisterButton(
+              onBtnPressed: createAccountPressed,
+              btnText: 'Create Account',
             ),
             const SizedBox(height: 40),
             GestureDetector(

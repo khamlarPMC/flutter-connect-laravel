@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutterlaravel/screens/login_screen.dart';
 import 'package:flutterlaravel/services/auth_service.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DrawerScreen extends StatelessWidget {
   const DrawerScreen({Key? key}) : super(key: key);
@@ -41,12 +42,7 @@ class DrawerScreen extends StatelessWidget {
                   title: const Text("Logout"),
                   leading: const Icon(Icons.logout),
                   onTap: () async {
-                    try {
-                      AuthServices.logout;
-                      Navigator.pop(context);
-                    } catch (e) {
-                      print('Logout error: $e');
-                    }
+                    await logout(context);
                   },
                 ),
               ],
@@ -72,4 +68,13 @@ class DrawerScreen extends StatelessWidget {
       ),
     );
   }
+
+  Future<void> logout(BuildContext context) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.clear(); // Clear any user-related data stored in SharedPreferences
+  Navigator.pushNamedAndRemoveUntil(
+    context, '/login', (Route<dynamic> route) => false);
+}
+
+
 }

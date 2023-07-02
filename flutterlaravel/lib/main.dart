@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
       home: const LoginScreen(),
       routes: {
         UpdateStudentForm.routeName: (context) => UpdateStudentForm(),
+        '/login': (context) => const LoginScreen(),
       },
     );
   }

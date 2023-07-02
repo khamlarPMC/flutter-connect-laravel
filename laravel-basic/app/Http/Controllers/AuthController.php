@@ -53,14 +53,10 @@ class AuthController extends Controller
         $response = ['message' => 'Incorrect email or password'];
         return response()->json($response, 400);
     }
-
-    public function logout(Request $request)
+    public function logout()
     {
         Auth::logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return response()->json(['message' => 'User logged out successfully'], 200);
+        return redirect('/'); // Redirect to the desired page after logout
     }
+
 }

@@ -48,3 +48,4 @@ Route::middleware('auth:sanctum')->get('/user/revoke', function (Request $reques
 
 Route::post('/auth/register',[AuthController::class, 'register']);
 Route::post('/auth/login',[AuthController::class, 'login']);
+Route::post('/logout', 'Auth\AuthController@logout')->name('logout');

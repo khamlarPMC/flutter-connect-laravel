@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class RoundedButton extends StatelessWidget {
+class RegisterButton extends StatelessWidget {
   final String btnText;
   final Function onBtnPressed;
 
-  const RoundedButton(
+  const RegisterButton(
       {super.key, required this.btnText, required this.onBtnPressed});
 
   @override
